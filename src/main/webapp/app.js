@@ -1,30 +1,46 @@
-	function sayHello(){
-		var name = document.getElementById("name").value;
-		alert("Name: " + name);
-		calculateSalary(printSalary);
-	}
 
-	function calculateSalary(xyzFunction){
-		var age = document.getElementById("age").value;
-		var salary = 2*age;
-		xyzFunction(salary);
-	}
+function addEmployee(event){
+	//event.preventDefault();
+	var $form = $("#employee-form");
+	var json = toJson($form);
 
-	function printSalary(salary){
-		console.info("The salary is " + salary)
-	}
+	alert("adding employee");
 
-	function getEmployee(){
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = processRequest;
-		xhttp.open("GET", "http://localhost:9000/employee/api", true);
-		xhttp.send();
-	}
 
-	function processRequest(){
-		if(this.status == 200){
-			console.log(this.responseText);
-		}else{
-			console.log("A network error has happened");
-		}
-	}
+	return false;
+
+	$.ajax({
+	   url: './api',
+	   type: 'POST',
+	   data: json,
+	   success: function(response) {
+	   		alert("Employee created");	     //...
+	   },
+	   error: function(){
+	   		alert("En error has occurred");
+	   }
+	});
+
+	return false;
+}
+
+
+function toJson($form){
+    var serialized = $form.serializeArray();
+    console.log(serialized);
+    var s = '';
+    var data = {};
+    for(s in serialized){
+        data[serialized[s]['name']] = serialized[s]['value']
+    }
+    var json = JSON.stringify(data);
+    console.log(json);
+    return json;
+}
+
+function init(){
+	$('#add-employee').click(addEmployee);
+}
+
+
+$(document).ready(init);
